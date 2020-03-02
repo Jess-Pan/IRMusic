@@ -2,6 +2,8 @@ package com.android.music.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -20,6 +22,9 @@ import com.android.music.Utils.IRUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static com.android.music.Views.MusicListFragment.KeyMusicListFragment;
+import static com.android.music.Views.MusicPlayerFragment.KeyMusicPlayerFragment;
+
 /**
  * @ProjectName: IRMusicPlayer
  * @Package: com.android.music
@@ -32,41 +37,63 @@ import java.util.List;
 public class RootBaseActivity extends AppCompatActivity
         implements IRMusicDao.ToFragmentListener {
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    public static final String TAG_MUSIC_LIST_FRAGMENT = "f1";
+    public static final String TAG_MUSIC_PLAYER_FRAGMENT = "f2";
+    public static final String FLAG_MUSIC_LIST_FRAGMENT = "list";
+    public static final String FLAG_MUSIC_PLAYER_FRAGMENT = "player";
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE"};
+
     ServiceConnection mConnection;
-    IRService.IRServiceBinder mBinder;
+    public IRService.IRServiceBinder mBinder;
     List<MusicBean> mMusicList;
     MusicLoaderTask mLoaderTask;
     Intent mServiceIntent;
     MusicListFragment mMusicListFragment;
-
-
-    public void setMusicList(List<MusicBean> mMusicList) {
-        this.mMusicList = mMusicList;
-    }
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE"};
+    MusicPlayerFragment mMusicPlayerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_root);
 
-        initView(savedInstanceState);
+        verifyStoragePermissions(this);
+        initView();
         initData();
         buildService();
     }
 
-    protected void initView(Bundle savedInstanceState) {
-        verifyStoragePermissions(this);
-        mMusicListFragment = MusicListFragment.newInstance("test");
-        if (savedInstanceState == null) {
-            this.getSupportFragmentManager().beginTransaction()
-                    .add(R.id.frameLayout, mMusicListFragment, "f1")
-                    .commit();
+    protected void initView() {
+        mMusicListFragment = MusicListFragment.newInstance(FLAG_MUSIC_LIST_FRAGMENT);
+        mMusicPlayerFragment = MusicPlayerFragment.newInstance(FLAG_MUSIC_PLAYER_FRAGMENT);
+        this.getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frameLayout, mMusicListFragment, TAG_MUSIC_LIST_FRAGMENT)
+                .commit();
+
+    }
+
+    public void updateFragment(String key) {
+        switch (key) {
+            case KeyMusicPlayerFragment:
+                    packFragmentManager(mMusicPlayerFragment, TAG_MUSIC_PLAYER_FRAGMENT);
+                break;
+            case KeyMusicListFragment:
+                    packFragmentManager(mMusicListFragment, TAG_MUSIC_LIST_FRAGMENT);
+                break;
+            default:
+                break;
         }
+    }
+
+    private void packFragmentManager(Fragment fragment, String tag) {
+        this.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameLayout, fragment, tag)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void buildService() {
@@ -89,6 +116,10 @@ public class RootBaseActivity extends AppCompatActivity
                     mBinder = null;
                 }
             };
+    }
+
+    public void setMusicList(List<MusicBean> mMusicList) {
+        this.mMusicList = mMusicList;
     }
 
     protected void goMusicTask() {

@@ -5,15 +5,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.music.Models.MusicBean;
 import com.android.music.R;
 import com.android.music.Utils.IRUtils;
-
+import com.android.music.Views.RootBaseActivity;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
+import static com.android.music.Views.MusicPlayerFragment.KeyMusicPlayerFragment;
 
 /**
  * @ProjectName: IRMusicPlayer
@@ -29,8 +29,11 @@ public class IRMusicRecyclerViewAdapter extends
 
     private static final String TAG = "MUSIC_ADAPTER";
     private List<MusicBean> mMusicList;
+    private RootBaseActivity mActivity;
 
-    public IRMusicRecyclerViewAdapter() {}
+    public IRMusicRecyclerViewAdapter(RootBaseActivity activity) {
+        this.mActivity = activity;
+    }
 
     public void setMusicList(List<MusicBean> musicList) {
         this.mMusicList = musicList;
@@ -38,7 +41,7 @@ public class IRMusicRecyclerViewAdapter extends
 
     @NotNull
     @Override
-    public IRMusicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IRMusicViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.item_music, parent, false);
@@ -49,6 +52,8 @@ public class IRMusicRecyclerViewAdapter extends
                 int position = holder.getAdapterPosition();
                 MusicBean music = mMusicList.get(position);
                 IRUtils.dLog(TAG, "title = " + music.getTitle());
+                mActivity.mBinder.setNowPlayMusic(music);
+                mActivity.updateFragment(KeyMusicPlayerFragment);
             }
         });
         return holder;

@@ -1,6 +1,9 @@
 package com.android.music.Models;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @ProjectName: IRMusicPlayer
  * @Package: com.android.music
@@ -10,7 +13,7 @@ package com.android.music.Models;
  * @CreateDate: 2020/2/27
  */
 
-public class MusicBean {
+public class MusicBean implements Parcelable {
 
     /**
      * 音乐唯一标识
@@ -46,6 +49,12 @@ public class MusicBean {
         this.artist = artist;
     }
 
+    MusicBean(Parcel source) {
+        this.uid = source.readLong();
+        this.title = source.readString();
+        this.artist = source.readString();
+    }
+
     public long getUid() {
         return uid;
     }
@@ -69,4 +78,28 @@ public class MusicBean {
     public void setArtist(String artist) {
         this.artist = artist;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeLong(uid);
+        dest.writeString(artist);
+    }
+
+    private static final Creator<MusicBean> CREATOR = new Creator<MusicBean>() {
+        @Override
+        public MusicBean createFromParcel(Parcel source) {
+            return new MusicBean(source);
+        }
+
+        @Override
+        public MusicBean[] newArray(int size) {
+            return new MusicBean[0];
+        }
+    };
 }

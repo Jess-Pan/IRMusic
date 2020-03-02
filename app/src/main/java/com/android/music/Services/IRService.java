@@ -45,6 +45,7 @@ public class IRService extends Service {
 
         private List<MusicBean> mMusicList;
         private Context mContext;
+        private MusicBean mNowPlayMusic;
 
         IRServiceBinder(Context context) {
             this.mContext = context;
@@ -56,8 +57,16 @@ public class IRService extends Service {
             return mMusicList;
         }
 
-        public MusicBean getMusic(int position) {
-            return mMusicList.get(position);
+        public MusicBean getNowPlayMusic() {
+            return mNowPlayMusic;
+        }
+
+        public void setMusicList(List<MusicBean> mMusicList) {
+            this.mMusicList = mMusicList;
+        }
+
+        public void setNowPlayMusic(MusicBean mNowPlayMusic) {
+            this.mNowPlayMusic = mNowPlayMusic;
         }
 
         public void freeCursor() {

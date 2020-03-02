@@ -3,11 +3,13 @@ package com.android.music.Views;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import com.android.music.Utils.IRUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -29,7 +33,8 @@ import java.util.List;
 public class MusicListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static String KeyMusicListFragment = "key_music_list_fragment";
+    static final String KeyMusicListFragment = "key_music_list_fragment";
+    private final String KeySaveMusicList = "onSaveList";
     SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mMusicRecyclerList;
     private TextView mNullText;
@@ -54,9 +59,17 @@ public class MusicListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            IRUtils.eLog("pzh", "=========");
+//            mMusicList = savedInstanceState.getParcelableArrayList(KeySaveMusicList);
+//            mActivity.mBinder.setMusicList(mMusicList);
+//            mActivity.setMusicList(mMusicList);
+//            IRUtils.eLog("pzh", mMusicList.get(1).getTitle());
+//        }
         View rootView = inflater.inflate(R.layout.fragment_music_list, container, false);
         initView(rootView);
         initListener();
+        refreshView();
         return rootView;
     }
 
@@ -74,7 +87,7 @@ public class MusicListFragment extends Fragment
         this.mNullText = rootView.findViewById(R.id.nullText);
         this.mRefreshLayout = rootView.findViewById(R.id.refreshLayout);
         this.mManager = new LinearLayoutManager(mActivity);
-        this.mAdapter = new IRMusicRecyclerViewAdapter();
+        this.mAdapter = new IRMusicRecyclerViewAdapter(mActivity);
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
         mRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent);
     }
@@ -88,12 +101,10 @@ public class MusicListFragment extends Fragment
     }
 
     void refreshView() {
-        if (mMusicList.isEmpty()) {
-            IRUtils.eLog("pzh", "----+++");
+        if (mMusicList == null) {
             mMusicRecyclerList.setVisibility(View.GONE);
             mNullText.setVisibility(View.VISIBLE);
         } else {
-            IRUtils.eLog("pzh", "----");
             configRecyclerList();
             mMusicRecyclerList.setVisibility(View.VISIBLE);
             mNullText.setVisibility(View.GONE);
@@ -112,4 +123,11 @@ public class MusicListFragment extends Fragment
         mRefreshLayout.setRefreshing(true);
         mActivity.goMusicTask();
     }
+
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        IRUtils.eLog("pzh", "save");
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelableArrayList(KeySaveMusicList, (ArrayList<? extends Parcelable>) mMusicList);
+//    }
 }
