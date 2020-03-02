@@ -59,13 +59,6 @@ public class MusicListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if (savedInstanceState != null) {
-//            IRUtils.eLog("pzh", "=========");
-//            mMusicList = savedInstanceState.getParcelableArrayList(KeySaveMusicList);
-//            mActivity.mBinder.setMusicList(mMusicList);
-//            mActivity.setMusicList(mMusicList);
-//            IRUtils.eLog("pzh", mMusicList.get(1).getTitle());
-//        }
         View rootView = inflater.inflate(R.layout.fragment_music_list, container, false);
         initView(rootView);
         initListener();
@@ -123,11 +116,4 @@ public class MusicListFragment extends Fragment
         mRefreshLayout.setRefreshing(true);
         mActivity.goMusicTask();
     }
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        IRUtils.eLog("pzh", "save");
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelableArrayList(KeySaveMusicList, (ArrayList<? extends Parcelable>) mMusicList);
-//    }
 }
