@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 
 import com.android.music.R;
 import com.android.music.Utils.IRUtils;
+import com.android.music.Widgets.CustomCircleImageView;
 
 public class MusicPlayerFragment extends Fragment {
 
     public static final String KeyMusicPlayerFragment = "key_music_player_fragment";
     private RootBaseActivity mActivity;
+    private CustomCircleImageView mCustomCircleImageView;
 
 
     private MusicPlayerFragment() {
@@ -42,6 +44,8 @@ public class MusicPlayerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         IRUtils.eLog("pzh", mActivity.mBinder.getNowPlayMusic().getTitle());
-        return inflater.inflate(R.layout.fragment_music_player, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_music_player, container, false);
+        //mCustomCircleImageView = rootView.findViewById(R.id.profile_image);
+        return rootView;
     }
 }
