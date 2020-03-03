@@ -122,6 +122,10 @@ public class RootBaseActivity extends AppCompatActivity
         this.mMusicList = mMusicList;
     }
 
+    public List<MusicBean> getMusicList() {
+        return mMusicList;
+    }
+
     protected void goMusicTask() {
         MusicLoaderTask mLoaderTask = new MusicLoaderTask(this);
         mLoaderTask.execute(mBinder);

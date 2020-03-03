@@ -49,7 +49,7 @@ public class MusicBean implements Parcelable {
         this.artist = artist;
     }
 
-    MusicBean(Parcel source) {
+    private MusicBean(Parcel source) {
         this.uid = source.readLong();
         this.title = source.readString();
         this.artist = source.readString();

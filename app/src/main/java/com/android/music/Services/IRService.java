@@ -61,16 +61,28 @@ public class IRService extends Service {
             return mNowPlayMusic;
         }
 
-        public void setMusicList(List<MusicBean> mMusicList) {
-            this.mMusicList = mMusicList;
-        }
-
         public void setNowPlayMusic(MusicBean mNowPlayMusic) {
             this.mNowPlayMusic = mNowPlayMusic;
         }
 
         public void freeCursor() {
             IRMusicFactory.getMusicList(mContext);
+        }
+
+        public void playMusic() {
+            // 播放音乐
+        }
+
+        public void pauseMusic() {
+            // 暂停播放
+        }
+
+        public void preMusic() {
+            // 前一首
+        }
+
+        public void nextMusic() {
+            // 后一首
         }
 
     }

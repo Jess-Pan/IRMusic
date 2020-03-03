@@ -26,12 +26,11 @@ public class CustomTitleBar extends ConstraintLayout {
     TextView mMusicTitle, mMusicArtist;
     ImageButton mLeftButton, mRightButton;
     int mLeftButtonImageID, mRightButtonImageID;
-    String mCenterTitleText, mCenterArtistText;
+    String mDefaultCenterTitleText, mDefaultCenterArtistText, mCenterTitleText, mCenterArtistText;
 
     public CustomTitleBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context, attrs);
-
     }
 
     private void initView(Context context, AttributeSet attrs) {
@@ -49,14 +48,22 @@ public class CustomTitleBar extends ConstraintLayout {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomTitleBar);
         mLeftButtonImageID = array.getResourceId(R.styleable.CustomTitleBar_leftButtonImageID, Color.TRANSPARENT);
         mRightButtonImageID = array.getResourceId(R.styleable.CustomTitleBar_rightButtonImageID, Color.TRANSPARENT);
-        mCenterArtistText = array.getString(R.styleable.CustomTitleBar_centerArtistText);
-        mCenterTitleText = array.getString(R.styleable.CustomTitleBar_centerTitleText);
+        mDefaultCenterArtistText = array.getString(R.styleable.CustomTitleBar_centerArtistText);
+        mDefaultCenterTitleText = array.getString(R.styleable.CustomTitleBar_centerTitleText);
         array.recycle();
 
         mRightButton.setBackgroundResource(mRightButtonImageID);
         mLeftButton.setBackgroundResource(mLeftButtonImageID);
-        mMusicTitle.setText(mCenterTitleText);
-        mMusicArtist.setText(mCenterArtistText);
+        mMusicTitle.setText(mDefaultCenterTitleText);
+        mMusicArtist.setText(mDefaultCenterArtistText);
+    }
+
+    public void setCenterTitleText(String centerTitleText) {
+        mMusicTitle.setText(centerTitleText);
+    }
+
+    public void setCenterArtistText(String centerArtistText) {
+        mMusicArtist.setText(centerArtistText);
     }
 
     public void setLeftButtonOnClickListener(OnClickListener listener) {
