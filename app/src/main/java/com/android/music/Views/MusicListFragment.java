@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,7 +45,7 @@ public class MusicListFragment extends Fragment
     private List<MusicBean> mMusicList;
     private String mParam;
 
-    private MusicListFragment() {
+    public MusicListFragment() {
 
     }
 
@@ -54,6 +55,12 @@ public class MusicListFragment extends Fragment
         bundle.putString(KeyMusicListFragment, flag);
         musicListFragment.setArguments(bundle);
         return musicListFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -94,7 +101,7 @@ public class MusicListFragment extends Fragment
     }
 
     void refreshView() {
-        if (mMusicList == null) {
+        if (mMusicList == null || mMusicList.isEmpty()) {
             mMusicRecyclerList.setVisibility(View.GONE);
             mNullText.setVisibility(View.VISIBLE);
         } else {
