@@ -77,10 +77,14 @@ public class MusicPlayerFragment extends Fragment implements
         mPlayerTotalTime = rootView.findViewById(R.id.mPlayerTotalTime);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void initData() {
         mMusicTitle = mActivity.mBinder.getNowPlayMusic().getTitle();
         mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
-
         mCustomTitleBar.setCenterArtistText(mMusicArtist);
         mCustomTitleBar.setCenterTitleText(mMusicTitle);
     }
@@ -90,11 +94,28 @@ public class MusicPlayerFragment extends Fragment implements
         mCustomTitleBar.setRightButtonOnClickListener(this);
         mCustomCircleImageView.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+        mBtnStopStart.setOnClickListener(this);
+        mBtnPrior.setOnClickListener(this);
+        mBtnNext.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.mBtnPlay:
+                mActivity.mBinder.playMusic();
+                break;
+            case R.id.mBtnNext:
+                mActivity.mBinder.nextMusic();
+                initData();
+                break;
+            case R.id.mBtnPrevious:
+                mActivity.mBinder.preMusic();
+                initData();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

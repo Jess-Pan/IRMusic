@@ -47,18 +47,21 @@ public class MusicBean implements Parcelable {
      * 构造函数
      * @param uid
      * @param title
+     * @param data
      * @param artist
      */
-    MusicBean(int uid, String title, String artist) {
+    MusicBean(int uid, String title, String artist, String data) {
         this.uid = uid;
         this.title = title;
         this.artist = artist;
+        this.data = data;
     }
 
     private MusicBean(Parcel source) {
         this.uid = source.readLong();
         this.title = source.readString();
         this.artist = source.readString();
+        this.data = source.readString();
     }
 
     public long getUid() {
@@ -103,6 +106,7 @@ public class MusicBean implements Parcelable {
         dest.writeString(title);
         dest.writeLong(uid);
         dest.writeString(artist);
+        dest.writeString(data);
     }
 
     private static final Creator<MusicBean> CREATOR = new Creator<MusicBean>() {

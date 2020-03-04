@@ -138,6 +138,7 @@ public class RootBaseActivity extends AppCompatActivity
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,9 +147,10 @@ public class RootBaseActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mBinder.freeCursor();
+        mBinder.releaseMediaPlayer();
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);
-        mBinder.freeCursor();
         mLoaderTask = null;
         System.gc();
     }

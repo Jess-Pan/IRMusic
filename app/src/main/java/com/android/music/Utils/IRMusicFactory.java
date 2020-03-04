@@ -36,6 +36,7 @@ public class IRMusicFactory {
                     music.setUid(uid);
                     music.setTitle(title);
                     music.setArtist(artist);
+                    music.setData(data);
                     musicList.add(music);
                 }
 

@@ -52,8 +52,14 @@ public class IRMusicRecyclerViewAdapter extends
                 int position = holder.getAdapterPosition();
                 MusicBean music = mMusicList.get(position);
                 IRUtils.dLog(TAG, "title = " + music.getTitle());
-                mActivity.mBinder.setNowPlayMusic(music);
+                if (music != mActivity.mBinder.getNowPlayMusic()) {
+                    mActivity.mBinder.setNowPlayMusic(music);
+                    mActivity.mBinder.newMusicPlay();
+                } else {
+                    mActivity.mBinder.continuePlayMusic();
+                }
                 mActivity.updateFragment(KeyMusicPlayerFragment);
+
             }
         });
         return holder;
