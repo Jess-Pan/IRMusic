@@ -3,8 +3,12 @@ package com.android.music.Services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.MediaController;
+
 import com.android.music.Models.MusicBean;
 import com.android.music.Utils.IRMusicFactory;
 import com.android.music.Utils.IRUtils;
@@ -16,10 +20,24 @@ import java.util.List;
  */
 public class IRService extends Service {
 
+
+
     /**
      * 空的构造器
      */
     public IRService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // 重启服务时调用
+        return super.onStartCommand(intent, flags, startId);
     }
 
     /**
@@ -46,9 +64,14 @@ public class IRService extends Service {
         private List<MusicBean> mMusicList;
         private Context mContext;
         private MusicBean mNowPlayMusic;
+        private MediaPlayer mMediaPlayer;
+        boolean mIsPlaying = true;
 
         IRServiceBinder(Context context) {
             this.mContext = context;
+            if (mMediaPlayer == null) {
+                mMediaPlayer = new MediaPlayer();
+            }
         }
 
         public List<MusicBean> getMusicList() {
@@ -70,7 +93,12 @@ public class IRService extends Service {
         }
 
         public void playMusic() {
-            // 播放音乐
+            // 重新播放音乐
+            mMediaPlayer.reset();
+            mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(mNowPlayMusic.getData()));
+            mIsPlaying = true;
+            mMediaPlayer.setLooping(false);
+            mMediaPlayer.start();
         }
 
         public void pauseMusic() {
@@ -83,6 +111,10 @@ public class IRService extends Service {
 
         public void nextMusic() {
             // 后一首
+        }
+
+        public void continuePlayMusic() {
+            // 继续播放
         }
 
     }

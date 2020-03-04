@@ -1,6 +1,7 @@
 package com.android.music.Models;
 
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -29,6 +30,11 @@ public class MusicBean implements Parcelable {
      * 歌手名
      */
     private String artist;
+
+    /**
+     * 路径
+     */
+    private String data;
 
     /**
      * 空的构造函数
@@ -77,6 +83,14 @@ public class MusicBean implements Parcelable {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override
