@@ -37,7 +37,6 @@ public class MusicPlayerFragment extends Fragment implements
     private TextView mPlayerNowTime;
     private TextView mPlayerTotalTime;
     private static int mNowPlayPosition;
-    private IntentFilter mIntentFilter;
     OnCompletionBroadcast mReceiver;
 
     public MusicPlayerFragment() {}
@@ -59,7 +58,7 @@ public class MusicPlayerFragment extends Fragment implements
     }
 
 
-    private Handler mHandler = new Handler(new Handler.Callback() {
+    Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             if (message.what == 0x11) {
@@ -135,7 +134,7 @@ public class MusicPlayerFragment extends Fragment implements
         mBtnStopStart.setOnClickListener(this);
         mBtnPrior.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
-        mIntentFilter = new IntentFilter();
+        IntentFilter mIntentFilter = new IntentFilter();
         mReceiver = new OnCompletionBroadcast();
         mIntentFilter.addAction("OnCompletePlayer");
         mActivity.registerReceiver(mReceiver, mIntentFilter);
@@ -191,7 +190,7 @@ public class MusicPlayerFragment extends Fragment implements
         mActivity.mBinder.seekToMusic(progress);
     }
 
-    private Runnable mMusicSeekBarRunnable = new Runnable() {
+    Runnable mMusicSeekBarRunnable = new Runnable() {
         @Override
         public void run() {
             mNowPlayPosition = mActivity.mBinder.getCurrentPosition();

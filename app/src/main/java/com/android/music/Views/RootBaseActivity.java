@@ -56,7 +56,6 @@ public class RootBaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_root);
-
         verifyStoragePermissions(this);
         initView();
         initData();
@@ -70,7 +69,6 @@ public class RootBaseActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.frameLayout, mMusicListFragment, TAG_MUSIC_LIST_FRAGMENT)
                 .commit();
-
     }
 
     public void updateFragment(String key) {
@@ -147,6 +145,7 @@ public class RootBaseActivity extends AppCompatActivity {
         super.onDestroy();
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
+        mMusicPlayerFragment.mHandler.removeCallbacks(mMusicPlayerFragment.mMusicSeekBarRunnable);
         unregisterReceiver(mMusicPlayerFragment.mReceiver);
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);

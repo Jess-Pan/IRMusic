@@ -1,7 +1,6 @@
 package com.android.music.Services;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -12,17 +11,12 @@ import com.android.music.Utils.IRDefault;
 import com.android.music.Models.MusicBean;
 import com.android.music.Utils.IRMusicFactory;
 import com.android.music.Utils.IRUtils;
-import com.android.music.Views.MusicPlayerFragment;
-import com.android.music.Views.RootBaseActivity;
-
 import java.util.List;
 
 /**
  * 数据库操作服务
  */
 public class IRService extends Service {
-
-
 
     /**
      * 空的构造器
@@ -69,7 +63,6 @@ public class IRService extends Service {
         private MusicBean mNowPlayMusic;
         private MediaPlayer mMediaPlayer;
         public boolean mIsPlaying = true;
-        private RootBaseActivity mActivity;
         int arrayType = 0;
         Intent mIntentBroadcast;
 
@@ -244,18 +237,38 @@ public class IRService extends Service {
             }
         }
 
+        /**
+         * 播放到当前位置
+         * @param progress
+         */
         public void seekToMusic(int progress) {
             mMediaPlayer.seekTo(progress);
         }
 
+        /**
+         * 获取当前播放的位置
+         * @return
+         */
         public int getCurrentPosition() {
-            return mMediaPlayer.getCurrentPosition();
+            try {
+                return mMediaPlayer.getCurrentPosition();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+
         }
 
+        /**
+         * 播放错误的回调
+         * @param mediaPlayer
+         * @param i
+         * @param i1
+         * @return
+         */
         @Override
         public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
             IRUtils.eLog("pzh", "error");
-            nextMusic();
             return false;
         }
     }
