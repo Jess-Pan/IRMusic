@@ -60,13 +60,14 @@ public class IRService extends Service {
      * @Author: 27414
      * @CreateDate: 2020/2/28
      */
-    public static class IRServiceBinder extends Binder implements MediaPlayer.OnPreparedListener  {
+    public static class IRServiceBinder extends Binder implements MediaPlayer.OnPreparedListener,
+            MediaPlayer.OnCompletionListener {
 
         private List<MusicBean> mMusicList;
         private Context mContext;
         private MusicBean mNowPlayMusic;
         private MediaPlayer mMediaPlayer;
-        boolean mIsPlaying = true;
+        public boolean mIsPlaying = true;
         int arrayType = 1;
 
         IRServiceBinder(Context context) {
@@ -74,6 +75,8 @@ public class IRService extends Service {
             if (mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
             }
+            mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.setOnCompletionListener(this);
         }
 
         public List<MusicBean> getMusicList() {
@@ -119,8 +122,6 @@ public class IRService extends Service {
 
             setNowPlayMusic(mMusicList.get(position));
             newMusicPlay();
-
-
         }
 
         public void nextMusic() {
@@ -149,12 +150,8 @@ public class IRService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (arrayType == IRDefault.ARRAY_ONE_MUSIC) {
-                mMediaPlayer.setLooping(true);
-            }
             mIsPlaying = true;
             mMediaPlayer.prepareAsync();
-            mMediaPlayer.setOnPreparedListener(this);
         }
 
         @Override
@@ -164,6 +161,32 @@ public class IRService extends Service {
 
         public void releaseMediaPlayer() {
             mMediaPlayer.release();
+        }
+
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            switch (arrayType) {
+                case IRDefault.ARRAY_ONE_MUSIC:
+                    mMediaPlayer.seekTo(0);
+                    continuePlayMusic();
+                    break;
+                case IRDefault.ARRAY_RANDOM_MUSIC:
+                    // todo : random count
+                    break;
+                case IRDefault.ARRAY_ONE_LIST:
+                    nextMusic();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void seekToMusic(int progress) {
+            mMediaPlayer.seekTo(progress);
+        }
+
+        public int getCurrentPosition() {
+            return mMediaPlayer.getCurrentPosition();
         }
     }
 

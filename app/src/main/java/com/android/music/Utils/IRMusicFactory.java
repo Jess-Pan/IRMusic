@@ -30,13 +30,14 @@ public class IRMusicFactory {
                 long duration = cursor.getLong(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_DURATION));
                 long size = cursor.getLong(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_SIZE));
                 String data = cursor.getString(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_DATA));
+                int album_id = cursor.getInt(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_ALBUM_ID));
                 int isMusic = cursor.getInt(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_IS_MUSIC));
-
                 if (isMusic != 0 && duration / (500 * 60) >= 1) {
                     music.setUid(uid);
                     music.setTitle(title);
                     music.setArtist(artist);
                     music.setData(data);
+                    music.setDuration(duration);
                     musicList.add(music);
                 }
 

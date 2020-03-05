@@ -21,6 +21,7 @@ public final class IRDefault {
     static final String COLUMN_MUSIC_DURATION = Audio.Media.DURATION;
     static final String COLUMN_MUSIC_SIZE = Audio.Media.SIZE;
     static final String COLUMN_MUSIC_DATA = Audio.Media.DATA;
+    static final String COLUMN_MUSIC_ALBUM_ID = Audio.Media.ALBUM_ID;
     static final String COLUMN_MUSIC_IS_MUSIC = Audio.Media.IS_MUSIC;
     static final String COLUMN_MUSIC_DEFAULT_SORT_ORDER = Audio.Media.DEFAULT_SORT_ORDER;
     public static final int ARRAY_ONE_MUSIC = 1;

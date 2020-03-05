@@ -88,7 +88,6 @@ public class CustomCircleImageView extends AppCompatImageView {
 
     public CustomCircleImageView(Context context) {
         super(context);
-
         init();
     }
 

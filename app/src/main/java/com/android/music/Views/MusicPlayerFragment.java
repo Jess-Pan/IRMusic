@@ -4,10 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +26,15 @@ public class MusicPlayerFragment extends Fragment implements
         SeekBar.OnSeekBarChangeListener {
 
     public static final String KeyMusicPlayerFragment = "key_music_player_fragment";
-    private RootBaseActivity mActivity;
+    private static RootBaseActivity mActivity;
     private CustomCircleImageView mCustomCircleImageView;
     private CustomTitleBar mCustomTitleBar;
-    private AppCompatSeekBar mSeekBar;
+    private static AppCompatSeekBar mSeekBar;
     private ImageButton mBtnPrior, mBtnNext, mBtnStopStart;
-    private TextView mPlayerNowTime, mPlayerTotalTime;
+    private TextView mPlayerNowTime;
+    private TextView mPlayerTotalTime;
     private String mMusicTitle, mMusicArtist;
-
+    private static int mNowPlayPosition;
 
     public MusicPlayerFragment() {}
 
@@ -43,6 +45,20 @@ public class MusicPlayerFragment extends Fragment implements
         musicPlayerFragment.setArguments(bundle);
         return musicPlayerFragment;
     }
+
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            if (message.what == 0x11) {
+                mSeekBar.setProgress(mNowPlayPosition);
+                mPlayerNowTime.setText(IRUtils.calculateTime(mNowPlayPosition));
+                mHandler.postDelayed(mMusicSeekBarRunnable, 1000);
+                IRUtils.eLog("pzh", String.valueOf(mNowPlayPosition));
+            }
+            return false;
+        }
+    });
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +103,15 @@ public class MusicPlayerFragment extends Fragment implements
         mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
         mCustomTitleBar.setCenterArtistText(mMusicArtist);
         mCustomTitleBar.setCenterTitleText(mMusicTitle);
+        mSeekBar.setMax(Math.toIntExact(mActivity.mBinder.getNowPlayMusic().getDuration()));
+        mPlayerTotalTime.setText(IRUtils.calculateTime(mActivity.mBinder.getNowPlayMusic().getDuration()));
+        if (IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()) != null) {
+            mCustomCircleImageView.setImageBitmap(IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()));
+        } else {
+            mCustomCircleImageView.setImageResource(R.mipmap.ic_launcher);
+        }
+        configHandler();
+        configMusicPlayButtonImage();
     }
 
     private void initListener() {
@@ -99,11 +124,26 @@ public class MusicPlayerFragment extends Fragment implements
         mBtnNext.setOnClickListener(this);
     }
 
+    private void configHandler() {
+        Message msg = mHandler.obtainMessage();
+        msg.what = 0x11;
+        mHandler.sendMessage(msg);
+    }
+
+    private void configMusicPlayButtonImage() {
+        if (mActivity.mBinder.mIsPlaying) {
+            mBtnStopStart.setBackgroundResource(R.drawable.ic_pause_circle);
+        } else {
+            mBtnStopStart.setBackgroundResource(R.drawable.ic_play_circle);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mBtnPlay:
                 mActivity.mBinder.playMusic();
+                configMusicPlayButtonImage();
                 break;
             case R.id.mBtnNext:
                 mActivity.mBinder.nextMusic();
@@ -130,6 +170,18 @@ public class MusicPlayerFragment extends Fragment implements
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        int progress = seekBar.getProgress();
+        mActivity.mBinder.seekToMusic(progress);
     }
+
+    private Runnable mMusicSeekBarRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mNowPlayPosition = mActivity.mBinder.getCurrentPosition();
+            Message msg = mHandler.obtainMessage();
+            msg.what = 0x11;
+            mHandler.sendMessage(msg);
+        }
+    };
+
 }

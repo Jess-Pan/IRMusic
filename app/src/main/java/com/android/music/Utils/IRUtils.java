@@ -1,8 +1,14 @@
 package com.android.music.Utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.Formatter;
+import java.util.Locale;
 
 /**
  * @ProjectName: IRMusicPlayer
@@ -13,6 +19,11 @@ import android.widget.Toast;
  * @CreateDate: 2020/2/28
  */
 public final class IRUtils {
+
+    private static StringBuilder mFormatBuilder = new StringBuilder();
+    private static Formatter mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
+    private static MediaMetadataRetriever mMetadataRetriever = new MediaMetadataRetriever();
+
     /**
      * 全局的Log开关
      * 开: true
@@ -64,5 +75,27 @@ public final class IRUtils {
      */
     public static void showToast(Context context, int resId) {
         Toast.makeText(context, resId, Toast.LENGTH_LONG).show();
+    }
+
+    public static String calculateTime(long duration) {
+        long totalSeconds = duration / 1000;
+        long seconds = totalSeconds % 60;
+        long minutes = (totalSeconds / 60) % 60;
+        long hours = totalSeconds / 3600;
+        mFormatBuilder.setLength(0);
+        if(hours>0){
+            return mFormatter.format("%02d:%02d:%02d",hours,minutes,seconds).toString();
+        } else {
+            return mFormatter.format("%02d:%02d",minutes,seconds).toString();
+        }
+    }
+
+    public static Bitmap getAlbumPicture(String musicUri) {
+        mMetadataRetriever.setDataSource(musicUri);
+        byte[] picture = mMetadataRetriever.getEmbeddedPicture();
+        if (picture == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(picture, 0, picture.length);
     }
 }

@@ -36,6 +36,10 @@ public class MusicBean implements Parcelable {
      */
     private String data;
 
+    private long duration;
+
+    private int album_id;
+
     /**
      * 空的构造函数
      */
@@ -50,11 +54,13 @@ public class MusicBean implements Parcelable {
      * @param data
      * @param artist
      */
-    MusicBean(int uid, String title, String artist, String data) {
+    MusicBean(int uid, String title, String artist, String data, long duration, int album_id) {
         this.uid = uid;
         this.title = title;
         this.artist = artist;
         this.data = data;
+        this.duration = duration;
+        this.album_id = album_id;
     }
 
     private MusicBean(Parcel source) {
@@ -62,6 +68,8 @@ public class MusicBean implements Parcelable {
         this.title = source.readString();
         this.artist = source.readString();
         this.data = source.readString();
+        this.duration = source.readLong();
+        this.album_id = source.readInt();
     }
 
     public long getUid() {
@@ -96,6 +104,22 @@ public class MusicBean implements Parcelable {
         this.data = data;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public int getAlbum_id() {
+        return album_id;
+    }
+
+    public void setAlbum_id(int album_id) {
+        this.album_id = album_id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -107,6 +131,8 @@ public class MusicBean implements Parcelable {
         dest.writeLong(uid);
         dest.writeString(artist);
         dest.writeString(data);
+        dest.writeLong(duration);
+        dest.writeInt(album_id);
     }
 
     private static final Creator<MusicBean> CREATOR = new Creator<MusicBean>() {
