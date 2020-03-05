@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +23,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.music.R;
+import com.android.music.Utils.IRDefault;
 import com.android.music.Utils.IRUtils;
 import com.android.music.Widgets.CustomCircleImageView;
 import com.android.music.Widgets.CustomTitleBar;
+
+import java.util.ArrayList;
 
 public class MusicPlayerFragment extends Fragment implements
         View.OnClickListener,
@@ -33,11 +39,13 @@ public class MusicPlayerFragment extends Fragment implements
     private CustomCircleImageView mCustomCircleImageView;
     private CustomTitleBar mCustomTitleBar;
     private static AppCompatSeekBar mSeekBar;
-    private ImageButton mBtnPrior, mBtnNext, mBtnStopStart;
+    private AppCompatImageButton mBtnPrior, mBtnNext, mBtnStopStart, mBtnOption, mBtnMusicHistoryList;
     private TextView mPlayerNowTime;
     private TextView mPlayerTotalTime;
     private static int mNowPlayPosition;
     OnCompletionBroadcast mReceiver;
+
+    private ArrayList<Integer> mRangeControllerList;
 
     public MusicPlayerFragment() {}
 
@@ -71,7 +79,6 @@ public class MusicPlayerFragment extends Fragment implements
         }
     });
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +110,8 @@ public class MusicPlayerFragment extends Fragment implements
         mSeekBar = rootView.findViewById(R.id.mPlayProgress);
         mPlayerNowTime = rootView.findViewById(R.id.mPlayerNowTime);
         mPlayerTotalTime = rootView.findViewById(R.id.mPlayerTotalTime);
+        mBtnOption = rootView.findViewById(R.id.mBtnOption);
+        mBtnMusicHistoryList = rootView.findViewById(R.id.mBtnMusicHistoryList);
     }
 
     @Override
@@ -124,6 +133,7 @@ public class MusicPlayerFragment extends Fragment implements
         }
         configHandler();
         configMusicPlayButtonImage();
+        initMusicController();
     }
 
     private void initListener() {
@@ -134,6 +144,7 @@ public class MusicPlayerFragment extends Fragment implements
         mBtnStopStart.setOnClickListener(this);
         mBtnPrior.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
+        mBtnOption.setOnClickListener(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mReceiver = new OnCompletionBroadcast();
         mIntentFilter.addAction("OnCompletePlayer");
@@ -144,6 +155,26 @@ public class MusicPlayerFragment extends Fragment implements
         Message msg = mHandler.obtainMessage();
         msg.what = 0x11;
         mHandler.sendMessage(msg);
+    }
+
+    private void initMusicController() {
+        mRangeControllerList = new ArrayList<>(3);
+        mRangeControllerList.add(IRDefault.ARRAY_RANDOM_MUSIC, R.drawable.ic_random);
+        mRangeControllerList.add(IRDefault.ARRAY_ONE_MUSIC, R.drawable.ic_repeat_one);
+        mRangeControllerList.add(IRDefault.ARRAY_ONE_LIST, R.drawable.ic_repeat);
+    }
+
+    private int getRangeTypeFromService() {
+        return mActivity.mBinder.arrayType;
+    }
+
+    private void setRangeType() {
+        int typeCount = mActivity.mBinder.arrayType;
+        if (typeCount == 2) {
+            mActivity.mBinder.arrayType = 0;
+        } else {
+            mActivity.mBinder.arrayType += 1;
+        }
     }
 
     private void configMusicPlayButtonImage() {
@@ -168,6 +199,10 @@ public class MusicPlayerFragment extends Fragment implements
             case R.id.mBtnPrevious:
                 mActivity.mBinder.preMusic();
                 initData();
+                break;
+            case R.id.mBtnOption:
+                setRangeType();
+                mBtnOption.setBackgroundResource(mRangeControllerList.get(getRangeTypeFromService()));
                 break;
             default:
                 break;

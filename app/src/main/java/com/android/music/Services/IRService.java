@@ -63,7 +63,7 @@ public class IRService extends Service {
         private MusicBean mNowPlayMusic;
         private MediaPlayer mMediaPlayer;
         public boolean mIsPlaying = true;
-        int arrayType = 0;
+        public int arrayType = 0;
         Intent mIntentBroadcast;
 
         /**
