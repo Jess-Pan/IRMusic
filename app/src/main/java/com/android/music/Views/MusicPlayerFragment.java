@@ -1,6 +1,9 @@
 package com.android.music.Views;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,8 +36,9 @@ public class MusicPlayerFragment extends Fragment implements
     private ImageButton mBtnPrior, mBtnNext, mBtnStopStart;
     private TextView mPlayerNowTime;
     private TextView mPlayerTotalTime;
-    private String mMusicTitle, mMusicArtist;
     private static int mNowPlayPosition;
+    private IntentFilter mIntentFilter;
+    OnCompletionBroadcast mReceiver;
 
     public MusicPlayerFragment() {}
 
@@ -45,6 +49,15 @@ public class MusicPlayerFragment extends Fragment implements
         musicPlayerFragment.setArguments(bundle);
         return musicPlayerFragment;
     }
+
+    private class OnCompletionBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    }
+
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -99,8 +112,8 @@ public class MusicPlayerFragment extends Fragment implements
     }
 
     private void initData() {
-        mMusicTitle = mActivity.mBinder.getNowPlayMusic().getTitle();
-        mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
+        String mMusicTitle = mActivity.mBinder.getNowPlayMusic().getTitle();
+        String mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
         mCustomTitleBar.setCenterArtistText(mMusicArtist);
         mCustomTitleBar.setCenterTitleText(mMusicTitle);
         mSeekBar.setMax(Math.toIntExact(mActivity.mBinder.getNowPlayMusic().getDuration()));
@@ -122,6 +135,10 @@ public class MusicPlayerFragment extends Fragment implements
         mBtnStopStart.setOnClickListener(this);
         mBtnPrior.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
+        mIntentFilter = new IntentFilter();
+        mReceiver = new OnCompletionBroadcast();
+        mIntentFilter.addAction("OnCompletePlayer");
+        mActivity.registerReceiver(mReceiver, mIntentFilter);
     }
 
     private void configHandler() {
@@ -183,5 +200,4 @@ public class MusicPlayerFragment extends Fragment implements
             mHandler.sendMessage(msg);
         }
     };
-
 }

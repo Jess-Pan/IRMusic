@@ -17,7 +17,6 @@ import android.os.IBinder;
 import com.android.music.Models.MusicBean;
 import com.android.music.R;
 import com.android.music.Services.IRService;
-import com.android.music.Utils.IRMusicDao;
 import com.android.music.Utils.IRUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -34,8 +33,7 @@ import static com.android.music.Views.MusicPlayerFragment.KeyMusicPlayerFragment
  * @CreateDate: 2020/2/27
  */
 
-public class RootBaseActivity extends AppCompatActivity
-        implements IRMusicDao.ToFragmentListener {
+public class RootBaseActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     public static final String TAG_MUSIC_LIST_FRAGMENT = "f1";
@@ -51,8 +49,8 @@ public class RootBaseActivity extends AppCompatActivity
     List<MusicBean> mMusicList;
     MusicLoaderTask mLoaderTask;
     Intent mServiceIntent;
-    MusicListFragment mMusicListFragment;
-    MusicPlayerFragment mMusicPlayerFragment;
+    public MusicListFragment mMusicListFragment;
+    public MusicPlayerFragment mMusicPlayerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +145,9 @@ public class RootBaseActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mBinder.freeCursor();
+        mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
+        unregisterReceiver(mMusicPlayerFragment.mReceiver);
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);
         mLoaderTask = null;

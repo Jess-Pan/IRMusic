@@ -7,8 +7,12 @@ import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.music.Models.MusicBean;
+
 import java.util.Formatter;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * @ProjectName: IRMusicPlayer
@@ -23,6 +27,7 @@ public final class IRUtils {
     private static StringBuilder mFormatBuilder = new StringBuilder();
     private static Formatter mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
     private static MediaMetadataRetriever mMetadataRetriever = new MediaMetadataRetriever();
+    private static Random mRandom = new Random();
 
     /**
      * 全局的Log开关
@@ -97,5 +102,10 @@ public final class IRUtils {
             return null;
         }
         return BitmapFactory.decodeByteArray(picture, 0, picture.length);
+    }
+
+    public static int getRandomPosition(List<MusicBean> list) {
+        int count = list.size();
+        return mRandom.nextInt(count);
     }
 }

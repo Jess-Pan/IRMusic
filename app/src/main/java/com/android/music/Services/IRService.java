@@ -1,6 +1,7 @@
 package com.android.music.Services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -9,11 +10,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import com.android.music.Utils.IRDefault;
 import com.android.music.Models.MusicBean;
-import com.android.music.Utils.IRMusicDao;
 import com.android.music.Utils.IRMusicFactory;
 import com.android.music.Utils.IRUtils;
+import com.android.music.Views.MusicPlayerFragment;
+import com.android.music.Views.RootBaseActivity;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -61,42 +62,68 @@ public class IRService extends Service {
      * @CreateDate: 2020/2/28
      */
     public static class IRServiceBinder extends Binder implements MediaPlayer.OnPreparedListener,
-            MediaPlayer.OnCompletionListener {
+            MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
         private List<MusicBean> mMusicList;
         private Context mContext;
         private MusicBean mNowPlayMusic;
         private MediaPlayer mMediaPlayer;
         public boolean mIsPlaying = true;
-        int arrayType = 1;
+        private RootBaseActivity mActivity;
+        int arrayType = 0;
+        Intent mIntentBroadcast;
 
+        /**
+         * 构造函数，声明时创建MediaPlayer对象，并设置监听，便于后续对Media Player的操作
+         * @param context
+         */
         IRServiceBinder(Context context) {
             this.mContext = context;
             if (mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
             }
+            mIntentBroadcast = new Intent();
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setOnCompletionListener(this);
+            mMediaPlayer.setOnErrorListener(this);
         }
 
+        /**
+         * 获取音乐列表，返回一个列表项，该，列表为最终实际调用的音乐，由Service统一调度
+         * @return
+         */
         public List<MusicBean> getMusicList() {
             IRUtils.dLog("pzh", "start search");
             this.mMusicList = IRMusicFactory.getMusicList(mContext);
             return mMusicList;
         }
 
+        /**
+         * 返回当前播放的音乐
+         * @return
+         */
         public MusicBean getNowPlayMusic() {
             return mNowPlayMusic;
         }
 
+        /**
+         * 设置当前播放的音乐
+         * @param mNowPlayMusic
+         */
         public void setNowPlayMusic(MusicBean mNowPlayMusic) {
             this.mNowPlayMusic = mNowPlayMusic;
         }
 
-        public void freeCursor() {
-            IRMusicFactory.getMusicList(mContext);
+        /**
+         * 调用{@link IRMusicFactory#closeCursor(Context)}释放游标对象
+         */
+        public void freeCursor(Context context) {
+            IRMusicFactory.closeCursor(context);
         }
 
+        /**
+         * 判断当前是否处于播放状态，选则继续播放或者暂停
+         */
         public void playMusic() {
             if (mIsPlaying) {
                 pauseMusic();
@@ -105,14 +132,20 @@ public class IRService extends Service {
             }
         }
 
+        /**
+         * 暂停播放
+         */
         void pauseMusic() {
-            // 暂停播放
+
             mIsPlaying = false;
             mMediaPlayer.pause();
         }
 
+        /**
+         * 前一首
+         */
         public void preMusic() {
-            // 前一首
+
             int position = mMusicList.indexOf(mNowPlayMusic);
             if (position == 0) {
                 position = mMusicList.size() - 1;
@@ -124,8 +157,11 @@ public class IRService extends Service {
             newMusicPlay();
         }
 
+        /**
+         * 下一首
+         */
         public void nextMusic() {
-            // 后一首
+
             int position = mMusicList.indexOf(mNowPlayMusic);
             if (position == mMusicList.size() - 1) {
                 position = 0;
@@ -136,45 +172,72 @@ public class IRService extends Service {
             newMusicPlay();
         }
 
+        /**
+         * 继续播放
+         */
         public void continuePlayMusic() {
-            // 继续播放
+
             mIsPlaying = true;
             mMediaPlayer.start();
         }
 
+        /**
+         * 播放一首新歌
+         */
         public void newMusicPlay() {
             mMediaPlayer.reset();
             try {
                 mMediaPlayer.setDataSource(mContext, Uri.parse(mNowPlayMusic.getData()));
                 IRUtils.eLog("pzh", mNowPlayMusic.getData());
-            } catch (IOException e) {
+                mIsPlaying = true;
+                mMediaPlayer.prepareAsync();
+            } catch (Exception e) {
                 e.printStackTrace();
+                getMusicList();
             }
-            mIsPlaying = true;
-            mMediaPlayer.prepareAsync();
+
         }
 
+        /**
+         * 缓存结束时间监听回调
+         * @param player
+         */
         @Override
-        public void onPrepared(MediaPlayer mp) {
-            mp.start();
+        public void onPrepared(MediaPlayer player) {
+            player.start();
         }
 
+        /**
+         * 释放Media Player对象
+         */
         public void releaseMediaPlayer() {
             mMediaPlayer.release();
         }
 
+        /**
+         * 取随机数进行播放
+         */
+        void randomMusicPlay() {
+            int seedPosition = IRUtils.getRandomPosition(mMusicList);
+            setNowPlayMusic(mMusicList.get(seedPosition));
+            newMusicPlay();
+        }
+
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
+            mIntentBroadcast.setAction("OnCompletePlayer");
             switch (arrayType) {
                 case IRDefault.ARRAY_ONE_MUSIC:
                     mMediaPlayer.seekTo(0);
                     continuePlayMusic();
                     break;
                 case IRDefault.ARRAY_RANDOM_MUSIC:
-                    // todo : random count
+                    randomMusicPlay();
+                    mContext.sendBroadcast(mIntentBroadcast);
                     break;
                 case IRDefault.ARRAY_ONE_LIST:
                     nextMusic();
+                    mContext.sendBroadcast(mIntentBroadcast);
                     break;
                 default:
                     break;
@@ -187,6 +250,13 @@ public class IRService extends Service {
 
         public int getCurrentPosition() {
             return mMediaPlayer.getCurrentPosition();
+        }
+
+        @Override
+        public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+            IRUtils.eLog("pzh", "error");
+            nextMusic();
+            return false;
         }
     }
 

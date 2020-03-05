@@ -11,12 +11,17 @@ import java.util.List;
  * @ProjectName: IRMusicPlayer
  * @Package: com.android.music.Utils
  * @ClassName: MusicFactory
- * @Description: function description
+ * @Description: 音乐数据源仓库 --> 获取音乐文件数据 ---> List
  * @Author: 27414
  * @CreateDate: 2020/2/28
  */
 public class IRMusicFactory {
 
+    /**
+     * 返回手机中的歌曲信息， 打包成对象
+     * @param context
+     * @return
+     */
     public static List<MusicBean> getMusicList(Context context) {
 
         Cursor cursor = getCursor(context.getContentResolver());
@@ -28,9 +33,7 @@ public class IRMusicFactory {
                 String title = cursor.getString(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_TITLE));
                 String artist = cursor.getString(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_ARTIST));
                 long duration = cursor.getLong(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_DURATION));
-                long size = cursor.getLong(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_SIZE));
                 String data = cursor.getString(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_DATA));
-                int album_id = cursor.getInt(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_ALBUM_ID));
                 int isMusic = cursor.getInt(cursor.getColumnIndex(IRDefault.COLUMN_MUSIC_IS_MUSIC));
                 if (isMusic != 0 && duration / (500 * 60) >= 1) {
                     music.setUid(uid);
@@ -47,6 +50,11 @@ public class IRMusicFactory {
         return musicList;
     }
 
+    /**
+     * 创建并返回一个查询游标，减小内存开销
+     * @param resolver
+     * @return
+     */
     private static Cursor getCursor(ContentResolver resolver) {
         return resolver.query(
                 IRDefault.EXTERNAL_MUSIC_CONTENT_URI,
@@ -56,7 +64,11 @@ public class IRMusicFactory {
                 IRDefault.COLUMN_MUSIC_DEFAULT_SORT_ORDER);
     }
 
-    private static void closeCursor(Cursor cursor) {
-        cursor.close();
+    /**
+     * 释放游标对象，减小开销
+     * @param context
+     */
+    public static void closeCursor(Context context) {
+        getCursor(context.getContentResolver()).close();
     }
 }

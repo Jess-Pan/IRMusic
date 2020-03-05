@@ -19,8 +19,8 @@ import static com.android.music.Views.MusicPlayerFragment.KeyMusicPlayerFragment
  * @ProjectName: IRMusicPlayer
  * @Package: com.android.music.Widgets
  * @ClassName: IRMusicRecyclerView
- * @Description: function description
- * @Author: 27414
+ * @Description: MusicRecyclerView 适配器
+ * @Author: lrcoder
  * @CreateDate: 2020/2/28
  */
 
@@ -31,14 +31,28 @@ public class IRMusicRecyclerViewAdapter extends
     private List<MusicBean> mMusicList;
     private RootBaseActivity mActivity;
 
+    /**
+     * 构造函数，传入Activity对象，便于获取服务的Binder对象，进行当前播放曲目的设置
+     * @param activity
+     */
     public IRMusicRecyclerViewAdapter(RootBaseActivity activity) {
         this.mActivity = activity;
     }
 
+    /**
+     * 传入创建RecyclerView的数据源 --> List<MusicBean>
+     * @param musicList
+     */
     public void setMusicList(List<MusicBean> musicList) {
         this.mMusicList = musicList;
     }
 
+    /**
+     * 在视图onCreate中进行点击事件绑定，减少资源开销
+     * @param parent
+     * @param viewType
+     * @return holder
+     */
     @NotNull
     @Override
     public IRMusicViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
@@ -65,6 +79,11 @@ public class IRMusicRecyclerViewAdapter extends
         return holder;
     }
 
+    /**
+     * 按照position进行视图绑定
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(IRMusicViewHolder holder, int position) {
         holder.mMusicTitle.setText(mMusicList.get(position).getTitle());
@@ -72,11 +91,18 @@ public class IRMusicRecyclerViewAdapter extends
         holder.mMusicIcon.setImageResource(R.drawable.ic_music);
     }
 
+    /**
+     * 返回数据源个数
+     * @return
+     */
     @Override
     public int getItemCount() {
         return mMusicList.size();
     }
 
+    /**
+     * 数据源布局Holder
+     */
     static class IRMusicViewHolder extends RecyclerView.ViewHolder {
 
         TextView mMusicTitle, mMusicArtist;
