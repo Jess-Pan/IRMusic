@@ -63,8 +63,8 @@ public class RootBaseActivity extends AppCompatActivity {
     }
 
     protected void initView() {
-        mMusicListFragment = MusicListFragment.newInstance(FLAG_MUSIC_LIST_FRAGMENT);
-        mMusicPlayerFragment = MusicPlayerFragment.newInstance(FLAG_MUSIC_PLAYER_FRAGMENT);
+        mMusicListFragment = MusicListFragment.newInstance();
+        mMusicPlayerFragment = MusicPlayerFragment.newInstance();
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.frameLayout, mMusicListFragment, TAG_MUSIC_LIST_FRAGMENT)

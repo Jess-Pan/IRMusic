@@ -4,11 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -41,17 +46,18 @@ public class MusicPlayerFragment extends Fragment implements
     private TextView mPlayerNowTime;
     private TextView mPlayerTotalTime;
     private static int mNowPlayPosition;
+    private HistoryMusicWindows mHistoryMusicWindows;
+    private ConstraintLayout mPlayerFragmentLayout;
     OnCompletionBroadcast mReceiver;
-    public HistoryMusicWindows mHistoryMusicWindows;
 
     private ArrayList<Integer> mRangeControllerList;
 
     public MusicPlayerFragment() {}
 
-    static MusicPlayerFragment newInstance(String flag) {
+    static MusicPlayerFragment newInstance() {
         MusicPlayerFragment musicPlayerFragment = new MusicPlayerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(KeyMusicPlayerFragment, flag);
+        bundle.putString(KeyMusicPlayerFragment, RootBaseActivity.FLAG_MUSIC_PLAYER_FRAGMENT);
         musicPlayerFragment.setArguments(bundle);
         return musicPlayerFragment;
     }
@@ -111,6 +117,7 @@ public class MusicPlayerFragment extends Fragment implements
         mPlayerTotalTime = rootView.findViewById(R.id.mPlayerTotalTime);
         mBtnOption = rootView.findViewById(R.id.mBtnOption);
         mBtnMusicHistoryList = rootView.findViewById(R.id.mBtnMusicHistoryList);
+        mPlayerFragmentLayout = rootView.findViewById(R.id.mMusicPlayerFragment);
     }
 
     @Override
@@ -118,15 +125,19 @@ public class MusicPlayerFragment extends Fragment implements
         super.onResume();
     }
 
-    public void initData() {
+    private void initData() {
         String mMusicTitle = mActivity.mBinder.getNowPlayMusic().getTitle();
         String mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
         mCustomTitleBar.setCenterArtistText(mMusicArtist);
         mCustomTitleBar.setCenterTitleText(mMusicTitle);
         mSeekBar.setMax(Math.toIntExact(mActivity.mBinder.getNowPlayMusic().getDuration()));
         mPlayerTotalTime.setText(IRUtils.calculateTime(mActivity.mBinder.getNowPlayMusic().getDuration()));
-        if (IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()) != null) {
-            mCustomCircleImageView.setImageBitmap(IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()));
+        Bitmap nowBackgroundBitmap = IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData());
+        if (nowBackgroundBitmap != null) {
+            mCustomCircleImageView.setImageBitmap(nowBackgroundBitmap);
+            //Bitmap blurImage = IRUtils.gaussBlurUseGauss(nowBackgroundBitmap, 70);
+            //mPlayerFragmentLayout.setBackground(new BitmapDrawable(blurImage));
+            // todo : 异步获取图片并设置到背景图层
         } else {
             mCustomCircleImageView.setImageResource(R.mipmap.ic_launcher);
         }
@@ -216,7 +227,7 @@ public class MusicPlayerFragment extends Fragment implements
                 break;
             case R.id.mBtnMusicHistoryList:
                 IRUtils.eLog("pzh", "pzh");
-                mHistoryMusicWindows.showAtLocation(mActivity.findViewById(R.id.musicPlayerFragment), Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
+                mHistoryMusicWindows.showAtLocation(mActivity.findViewById(R.id.mMusicPlayerFragment), Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
                 break;
             default:
                 break;

@@ -20,6 +20,10 @@ import com.android.music.Adapter.IRPopHistoryMusicRecyclerAdapter;
 import com.android.music.Models.MusicBean;
 import com.android.music.R;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 public class HistoryMusicWindows extends PopupWindow {
 
     private RecyclerView mHistoryRecyclerList;
@@ -30,7 +34,7 @@ public class HistoryMusicWindows extends PopupWindow {
     private int mLayoutId;
     private View mPopListView;
 
-    public HistoryMusicWindows(int layoutId, RootBaseActivity activity) {
+    HistoryMusicWindows(int layoutId, RootBaseActivity activity) {
         super(activity);
         this.mActivity = activity;
         this.mLayoutId = layoutId;
@@ -45,7 +49,7 @@ public class HistoryMusicWindows extends PopupWindow {
         mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(displayMetrics.heightPixels * 3 / 4);
-        setBackgroundDrawable(new ColorDrawable(0xbb000000));
+        setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.pop_window_corners));
         setFocusable(true);
         mPopListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -71,14 +75,19 @@ public class HistoryMusicWindows extends PopupWindow {
     }
 
     private void configHistoryList() {
-        //addHistoryMusic(mActivity.mBinder.getNowPlayMusic());
         mHistoryRecyclerList.setLayoutManager(mLinearLayoutManager);
         mHistoryRecyclerList.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         mHistoryRecyclerList.setAdapter(mHistoryRecyclerAdapter);
     }
 
-    public void addHistoryMusic(MusicBean music) {
-        mHistoryRecyclerAdapter.getHistoryMusicList().add(music);
+    void addHistoryMusic(MusicBean music) {
+        List<MusicBean> musicBeanList = mHistoryRecyclerAdapter.getHistoryMusicList();
+        if (mHistoryRecyclerAdapter.getHistoryMusicList().contains(music)) {
+            int position = musicBeanList.indexOf(music);
+            Collections.swap(mHistoryRecyclerAdapter.getHistoryMusicList(), position, musicBeanList.size() - 1);
+        } else {
+            mHistoryRecyclerAdapter.getHistoryMusicList().add(music);
+        }
         configHistoryList();
     }
 
