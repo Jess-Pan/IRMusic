@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.music.R;
@@ -24,7 +26,7 @@ import com.android.music.R;
 public class CustomTitleBar extends ConstraintLayout {
 
     TextView mMusicTitle, mMusicArtist;
-    ImageButton mLeftButton, mRightButton;
+    AppCompatImageButton mLeftButton, mRightButton;
     int mLeftButtonImageID, mRightButtonImageID;
     String mDefaultCenterTitleText, mDefaultCenterArtistText, mCenterTitleText, mCenterArtistText;
 

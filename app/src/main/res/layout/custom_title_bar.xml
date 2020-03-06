@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
+        android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="@+id/musicTitle"
         app:layout_constraintRight_toRightOf="@+id/musicTitle"
         app:layout_constraintTop_toBottomOf="@+id/musicTitle"
@@ -20,12 +21,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:lines="1"
+        android:ellipsize="end"
         app:layout_constraintLeft_toRightOf="@+id/leftImageButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/musicArtist"
         app:layout_constraintRight_toLeftOf="@+id/rightImageButton"/>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/leftImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/musicTitle"/>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/rightImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

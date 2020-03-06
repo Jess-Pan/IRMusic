@@ -8,17 +8,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -204,6 +201,9 @@ public class MusicPlayerFragment extends Fragment implements
             case R.id.mBtnOption:
                 setRangeType();
                 mBtnOption.setBackgroundResource(mRangeControllerList.get(getRangeTypeFromService()));
+                break;
+            case R.id.leftImageButton:
+                mActivity.onBackPressed();
                 break;
             default:
                 break;
