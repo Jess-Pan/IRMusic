@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/historyMusicLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="15dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <com.android.music.Widgets.CustomCircleImageView
+        android:id="@+id/historyMusicIcon"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/historyMusicTitle"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/historyMusicTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textColor="#FFFFFF"
+        app:layout_constraintLeft_toRightOf="@+id/historyMusicIcon"
+        app:layout_constraintTop_toTopOf="@+id/historyMusicIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/historyMusicIcon"
+        app:layout_constraintRight_toLeftOf="@+id/historyMusicDuration" />
+
+    <TextView
+        android:id="@+id/historyMusicDuration"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:lines="1"
+        android:maxEms="8"
+        android:textColor="#FFFFFF"
+        app:layout_constraintLeft_toRightOf="@+id/historyMusicTitle"
+        app:layout_constraintTop_toTopOf="@+id/historyMusicIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/historyMusicIcon"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

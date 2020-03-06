@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class MusicPlayerFragment extends Fragment implements
     private TextView mPlayerTotalTime;
     private static int mNowPlayPosition;
     OnCompletionBroadcast mReceiver;
+    public HistoryMusicWindows mHistoryMusicWindows;
 
     private ArrayList<Integer> mRangeControllerList;
 
@@ -116,7 +118,7 @@ public class MusicPlayerFragment extends Fragment implements
         super.onResume();
     }
 
-    private void initData() {
+    public void initData() {
         String mMusicTitle = mActivity.mBinder.getNowPlayMusic().getTitle();
         String mMusicArtist = mActivity.mBinder.getNowPlayMusic().getArtist();
         mCustomTitleBar.setCenterArtistText(mMusicArtist);
@@ -131,12 +133,19 @@ public class MusicPlayerFragment extends Fragment implements
         configHandler();
         configMusicPlayButtonImage();
         initMusicController();
+        mHistoryMusicWindows = new HistoryMusicWindows(R.layout.pop_music_layout, mActivity);
+        mHistoryMusicWindows.addHistoryMusic(mActivity.mBinder.getNowPlayMusic());
+    }
+
+    public void updateForHistory() {
+        initData();
     }
 
     private void initListener() {
         mCustomTitleBar.setLeftButtonOnClickListener(this);
         mCustomTitleBar.setRightButtonOnClickListener(this);
         mCustomCircleImageView.setOnClickListener(this);
+        mBtnMusicHistoryList.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
         mBtnStopStart.setOnClickListener(this);
         mBtnPrior.setOnClickListener(this);
@@ -204,6 +213,10 @@ public class MusicPlayerFragment extends Fragment implements
                 break;
             case R.id.leftImageButton:
                 mActivity.onBackPressed();
+                break;
+            case R.id.mBtnMusicHistoryList:
+                IRUtils.eLog("pzh", "pzh");
+                mHistoryMusicWindows.showAtLocation(mActivity.findViewById(R.id.musicPlayerFragment), Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
                 break;
             default:
                 break;

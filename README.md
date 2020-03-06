@@ -17,7 +17,7 @@
 
 - 异步交互
     - 系统广播（Broadcast）
-    - Activity和Service的Binder
+    - Binder
     - 异步任务（AsyncTAsk）
     - Handler
 
@@ -26,6 +26,7 @@
     - 自定义标题栏
 
 - 基本控件
+    - SwipeRefreshLayout
     - RecyclerView
     - Fragment
     - PopupWindow
