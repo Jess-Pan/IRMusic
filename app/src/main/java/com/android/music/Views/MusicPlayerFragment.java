@@ -162,6 +162,7 @@ public class MusicPlayerFragment extends Fragment implements
         mRangeControllerList.add(IRDefault.ARRAY_RANDOM_MUSIC, R.drawable.ic_random);
         mRangeControllerList.add(IRDefault.ARRAY_ONE_MUSIC, R.drawable.ic_repeat_one);
         mRangeControllerList.add(IRDefault.ARRAY_ONE_LIST, R.drawable.ic_repeat);
+        mBtnOption.setBackgroundResource(mRangeControllerList.get(getRangeTypeFromService()));
     }
 
     private int getRangeTypeFromService() {
