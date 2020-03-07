@@ -3,6 +3,12 @@ package com.android.music.Utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+
 import com.android.music.Models.MusicBean;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,4 +77,6 @@ public class IRMusicFactory {
     public static void closeCursor(Context context) {
         getCursor(context.getContentResolver()).close();
     }
+
+
 }

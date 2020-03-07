@@ -27,4 +27,6 @@ public final class IRDefault {
     public static final int ARRAY_ONE_MUSIC = 1;
     public static final int ARRAY_ONE_LIST = 2;
     public static final int ARRAY_RANDOM_MUSIC = 0;
+    public static final boolean USE_JNI_Blur = false;
+    public static final boolean USE_RenderScript_Blur = true;
 }
