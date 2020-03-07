@@ -18,8 +18,6 @@ import com.android.music.Widgets.CustomCircleImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.music.Views.MusicPlayerFragment.KeyMusicPlayerFragment;
-
 public class IRPopHistoryMusicRecyclerAdapter extends RecyclerView.Adapter<IRPopHistoryMusicRecyclerAdapter.PopMusicViewHolder> {
 
     private static List<MusicBean> mHistoryMusicList;

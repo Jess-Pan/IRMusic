@@ -204,7 +204,6 @@ public class RootBaseActivity extends AppCompatActivity {
             if (activity == null || activity.isFinishing() || activity.isDestroyed()) {
                 return;
             }
-            //IRUtils.eLog("pzh", "music = " + musicBeans.get(0).getTitle());
             activity.setMusicList(musicBeans);
             activity.mMusicListFragment.setMusicList(musicBeans);
             activity.mMusicListFragment.refreshView();
@@ -230,8 +229,6 @@ public class RootBaseActivity extends AppCompatActivity {
                         mBinder.playMusic();
                         mMusicPlayerFragment.configMusicPlayButtonImage();
                     }
-
-
                 }
             }
         }
