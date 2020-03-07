@@ -24,9 +24,14 @@
 - 自定义控件
     - 自定义ImageView
     - 自定义标题栏
+    - 自定义StatusBar
+    - 沉浸式
 
 - 基本控件
     - SwipeRefreshLayout
     - RecyclerView
     - Fragment
     - PopupWindow
+
+- Jni编程
+    - 高斯模糊（后采用RenderScript的方式进行图像处理）
