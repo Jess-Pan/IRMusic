@@ -1,8 +1,10 @@
 package com.android.music.Services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 public class IRService extends Service {
 
+    IRServiceBinder mIRServiceBinder;
     /**
      * 空的构造器
      */
@@ -27,7 +30,6 @@ public class IRService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
     }
 
     @Override
@@ -44,7 +46,13 @@ public class IRService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-        return new IRServiceBinder(this);
+        mIRServiceBinder = new IRServiceBinder(this);
+        return mIRServiceBinder;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**

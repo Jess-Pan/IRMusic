@@ -5,14 +5,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -56,6 +57,8 @@ public class RootBaseActivity extends AppCompatActivity {
     Intent mServiceIntent;
     public MusicListFragment mMusicListFragment;
     public MusicPlayerFragment mMusicPlayerFragment;
+    IntentFilter mIntentFilter;
+    BroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,19 +118,20 @@ public class RootBaseActivity extends AppCompatActivity {
     }
 
     protected void initData() {
-            mConnection = new ServiceConnection() {
+        mConnection = new ServiceConnection() {
 
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    mBinder = (IRService.IRServiceBinder) service;
-                    IRUtils.eLog("pzh", "bind ok");
-                }
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mBinder = (IRService.IRServiceBinder) service;
+                IRUtils.eLog("pzh", "bind ok");
+            }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    mBinder = null;
-                }
-            };
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mBinder = null;
+            }
+        };
+
     }
 
     public void setMusicList(List<MusicBean> mMusicList) {
@@ -141,6 +145,10 @@ public class RootBaseActivity extends AppCompatActivity {
     protected void goMusicTask() {
         MusicLoaderTask mLoaderTask = new MusicLoaderTask(this);
         mLoaderTask.execute(mBinder);
+        mIntentFilter = new IntentFilter();
+        mReceiver = new HeadsetBroadcast();
+        mIntentFilter.addAction("android.intent.action.HEADSET_PLUG");
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -163,6 +171,7 @@ public class RootBaseActivity extends AppCompatActivity {
         mBinder.releaseMediaPlayer();
         mMusicPlayerFragment.mHandler.removeCallbacks(mMusicPlayerFragment.mMusicSeekBarRunnable);
         unregisterReceiver(mMusicPlayerFragment.mReceiver);
+        unregisterReceiver(mReceiver);
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);
         mLoaderTask = null;
@@ -200,6 +209,31 @@ public class RootBaseActivity extends AppCompatActivity {
             activity.mMusicListFragment.setMusicList(musicBeans);
             activity.mMusicListFragment.refreshView();
             activity.mMusicListFragment.mRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    public class HeadsetBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("state")) {
+                if (intent.getIntExtra("state", 0) == 0) {
+                    // 拔出
+                    mBinder.playMusic();
+                    mMusicPlayerFragment.configMusicPlayButtonImage();
+                    IRUtils.eLog("pzh", "disconn");
+                } else if (intent.getIntExtra("state", 0) == 1) {
+                    // 连接
+                    if (mBinder.getNowPlayMusic() == null) {
+                        IRUtils.eLog("pzh", "conn");
+                    } else {
+                        mBinder.playMusic();
+                        mMusicPlayerFragment.configMusicPlayButtonImage();
+                    }
+
+
+                }
+            }
         }
     }
 }
