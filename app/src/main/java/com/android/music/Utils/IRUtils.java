@@ -1,5 +1,7 @@
 package com.android.music.Utils;
 
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +11,8 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.music.Models.MusicBean;
@@ -166,7 +170,7 @@ public final class IRUtils {
     public static Bitmap getBlurBitmap(Context context, Bitmap map) {
         //创建一个缩小后的bitmap
         Bitmap inputBitmap = Bitmap.createScaledBitmap(map, 50, 50, false);
-        //创建将在ondraw中使用到的经过模糊处理后的bitmap
+        //创建将在onDraw中使用到的经过模糊处理后的bitmap
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
         //创建RenderScript，ScriptIntrinsicBlur固定写法
@@ -186,4 +190,24 @@ public final class IRUtils {
         tmpOut.copyTo(outputBitmap);
         return outputBitmap;
     }
+
+    // 屏幕变暗
+    public void dimBackground(Activity activity, final float from, final float to) {
+        final Window window = activity.getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
+        valueAnimator.setDuration(500);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (Float) animation.getAnimatedValue();
+                window.setAttributes(params);
+            }
+        });
+
+        valueAnimator.start();
+    }
+
+    // Bitmap 暗化处理
+
 }

@@ -172,6 +172,7 @@ public class RootBaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        IRUtils.eLog("pzh", "onDes");
         getContentResolver().unregisterContentObserver(mMusicListFragment.mMediaObserver);
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
