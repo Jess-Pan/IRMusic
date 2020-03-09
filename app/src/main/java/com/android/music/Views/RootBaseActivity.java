@@ -128,7 +128,7 @@ public class RootBaseActivity extends AppCompatActivity {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mBinder = (IRService.IRServiceBinder) service;
-                IRUtils.eLog("pzh", "bind ok");
+                goMusicTask();
             }
 
             @Override
@@ -199,7 +199,6 @@ public class RootBaseActivity extends AppCompatActivity {
 
         @Override
         protected List<MusicBean> doInBackground(IRService.IRServiceBinder... binders) {
-
             return binders[0].getMusicList();
         }
 
