@@ -143,9 +143,9 @@ public class RootBaseActivity extends AppCompatActivity {
         this.mMusicList = mMusicList;
     }
 
-    public List<MusicBean> getMusicList() {
-        return mMusicList;
-    }
+//    public List<MusicBean> getMusicList() {
+//        return mMusicList;
+//    }
 
     protected void goMusicTask() {
         MusicLoaderTask mLoaderTask = new MusicLoaderTask(this);
@@ -176,7 +176,9 @@ public class RootBaseActivity extends AppCompatActivity {
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
         mMusicPlayerFragment.mHandler.removeCallbacks(mMusicPlayerFragment.mMusicSeekBarRunnable);
-        unregisterReceiver(mMusicPlayerFragment.mReceiver);
+        if (mMusicPlayerFragment.mReceiver != null) {
+            unregisterReceiver(mMusicPlayerFragment.mReceiver);
+        }
         unregisterReceiver(mReceiver);
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);
