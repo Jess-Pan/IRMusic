@@ -1,6 +1,8 @@
 package com.android.music.Views;
 
 import android.content.Context;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -9,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +44,7 @@ public class MusicListFragment extends Fragment
     private RootBaseActivity mActivity;
     private List<MusicBean> mMusicList;
     private String mParam;
+    MediaObserver mMediaObserver;
 
     public MusicListFragment() {
 
@@ -90,6 +95,8 @@ public class MusicListFragment extends Fragment
 
     private void initListener() {
         mRefreshLayout.setOnRefreshListener(this);
+        mMediaObserver = new MediaObserver(new Handler());
+        mActivity.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mMediaObserver);
     }
 
     void setMusicList(List<MusicBean> mMusicList) {
@@ -118,5 +125,20 @@ public class MusicListFragment extends Fragment
         IRUtils.eLog("pzh", "on refresh");
         mRefreshLayout.setRefreshing(true);
         mActivity.goMusicTask();
+    }
+
+    class MediaObserver extends ContentObserver {
+
+        MediaObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            IRUtils.eLog("pzh", "===========onChange");
+            RootBaseActivity.MusicLoaderTask mLoaderTask = new RootBaseActivity.MusicLoaderTask(mActivity);
+            mLoaderTask.execute(mActivity.mBinder);
+        }
     }
 }

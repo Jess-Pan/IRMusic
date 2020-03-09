@@ -12,10 +12,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -59,6 +63,7 @@ public class RootBaseActivity extends AppCompatActivity {
     public MusicPlayerFragment mMusicPlayerFragment;
     IntentFilter mIntentFilter;
     BroadcastReceiver mReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +172,7 @@ public class RootBaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getContentResolver().unregisterContentObserver(mMusicListFragment.mMediaObserver);
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
         mMusicPlayerFragment.mHandler.removeCallbacks(mMusicPlayerFragment.mMusicSeekBarRunnable);
@@ -211,6 +217,8 @@ public class RootBaseActivity extends AppCompatActivity {
         }
     }
 
+
+
     public class HeadsetBroadcast extends BroadcastReceiver {
 
         @Override
@@ -218,14 +226,16 @@ public class RootBaseActivity extends AppCompatActivity {
             if (intent.hasExtra("state")) {
                 if (intent.getIntExtra("state", 0) == 0) {
                     // 拔出
-                    mBinder.playMusic();
-                    mMusicPlayerFragment.configMusicPlayButtonImage();
+                    if (mBinder != null && mBinder.getNowPlayMusic() != null) {
+                        mBinder.playMusic();
+                        mMusicPlayerFragment.configMusicPlayButtonImage();
+                    }
+
                     IRUtils.eLog("pzh", "disconn");
                 } else if (intent.getIntExtra("state", 0) == 1) {
                     // 连接
-                    if (mBinder.getNowPlayMusic() == null) {
+                    if (mBinder != null && mBinder.getNowPlayMusic() != null) {
                         IRUtils.eLog("pzh", "conn");
-                    } else {
                         mBinder.playMusic();
                         mMusicPlayerFragment.configMusicPlayButtonImage();
                     }

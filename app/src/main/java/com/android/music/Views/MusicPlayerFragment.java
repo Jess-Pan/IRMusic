@@ -201,7 +201,7 @@ public class MusicPlayerFragment extends Fragment implements
         }
     }
 
-    public void configMusicPlayButtonImage() {
+    void configMusicPlayButtonImage() {
         if (mActivity.mBinder.mIsPlaying) {
             mBtnStopStart.setBackgroundResource(R.drawable.ic_pause_circle);
         } else {
