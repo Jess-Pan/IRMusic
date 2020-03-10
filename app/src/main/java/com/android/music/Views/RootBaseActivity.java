@@ -12,14 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.database.ContentObserver;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -137,6 +134,10 @@ public class RootBaseActivity extends AppCompatActivity {
             }
         };
 
+        mIntentFilter = new IntentFilter();
+        mReceiver = new HeadsetBroadcast();
+        mIntentFilter.addAction("android.intent.action.HEADSET_PLUG");
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     public void setMusicList(List<MusicBean> mMusicList) {
@@ -150,10 +151,6 @@ public class RootBaseActivity extends AppCompatActivity {
     protected void goMusicTask() {
         MusicLoaderTask mLoaderTask = new MusicLoaderTask(this);
         mLoaderTask.execute(mBinder);
-        mIntentFilter = new IntentFilter();
-        mReceiver = new HeadsetBroadcast();
-        mIntentFilter.addAction("android.intent.action.HEADSET_PLUG");
-        registerReceiver(mReceiver, mIntentFilter);
     }
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -170,9 +167,18 @@ public class RootBaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        IRUtils.eLog("pzh", "onDes");
+        IRUtils.eLog("pzh", "onDestroy");
         getContentResolver().unregisterContentObserver(mMusicListFragment.mMediaObserver);
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
@@ -185,6 +191,19 @@ public class RootBaseActivity extends AppCompatActivity {
         this.stopService(mServiceIntent);
         mLoaderTask = null;
         System.gc();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        IRUtils.eLog("pzh", "onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IRUtils.eLog("pzh", "onPause");
     }
 
     static class MusicLoaderTask extends AsyncTask<IRService.IRServiceBinder, Integer, List<MusicBean>> {
@@ -218,8 +237,6 @@ public class RootBaseActivity extends AppCompatActivity {
             activity.mMusicListFragment.mRefreshLayout.setRefreshing(false);
         }
     }
-
-
 
     public class HeadsetBroadcast extends BroadcastReceiver {
 
