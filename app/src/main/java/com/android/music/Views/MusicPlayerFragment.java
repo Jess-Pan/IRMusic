@@ -46,7 +46,8 @@ public class MusicPlayerFragment extends Fragment implements
     private static int mNowPlayPosition;
     private HistoryMusicWindows mHistoryMusicWindows;
     private ConstraintLayout mPlayerFragmentLayout;
-    OnCompletionBroadcast mReceiver;
+    OnCompletionBroadcast mCompleteReceiver;
+    OnErrorPlayBroadcast mErrorReceiver;
 
     private ArrayList<Integer> mRangeControllerList;
 
@@ -61,6 +62,14 @@ public class MusicPlayerFragment extends Fragment implements
     }
 
     private class OnCompletionBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    }
+
+    private class OnErrorPlayBroadcast extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -168,9 +177,11 @@ public class MusicPlayerFragment extends Fragment implements
         mBtnNext.setOnClickListener(this);
         mBtnOption.setOnClickListener(this);
         IntentFilter mIntentFilter = new IntentFilter();
-        mReceiver = new OnCompletionBroadcast();
+        mCompleteReceiver = new OnCompletionBroadcast();
+        mErrorReceiver = new OnErrorPlayBroadcast();
+        mIntentFilter.addAction("onErrorPlayer");
         mIntentFilter.addAction("OnCompletePlayer");
-        mActivity.registerReceiver(mReceiver, mIntentFilter);
+        mActivity.registerReceiver(mCompleteReceiver, mIntentFilter);
     }
 
     private void configHandler() {

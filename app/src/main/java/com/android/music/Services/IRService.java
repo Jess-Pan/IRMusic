@@ -277,6 +277,12 @@ public class IRService extends Service {
         @Override
         public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
             IRUtils.eLog("pzh", "error");
+            // 如果播放错误，自动播放下一首
+            mIntentBroadcast.setAction("onErrorPlayer");
+            if (mMediaPlayer != null && mNowPlayMusic != null) {
+                nextMusic();
+                mContext.sendBroadcast(mIntentBroadcast);
+            }
             return false;
         }
     }

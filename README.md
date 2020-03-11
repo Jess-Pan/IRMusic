@@ -37,7 +37,7 @@
     - 高斯模糊（后采用RenderScript的方式进行图像处理）
 
 ## 改进方向
-    1. 取消下滑刷新，改为ContentObserver观察媒体音乐库的变化，onChange()时，刷新List
+    1. ~~取消下滑刷新，改为ContentObserver观察媒体音乐库的变化，onChange()时，刷新List~~
     2. 刷新时需要取消音乐播放
     3. 历史记录需要用数据库记录，而不是arrayList
     4. 添加歌单信息，而不是只有一个列表

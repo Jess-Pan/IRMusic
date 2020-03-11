@@ -57,7 +57,7 @@ public class RootBaseActivity extends AppCompatActivity {
     public MusicListFragment mMusicListFragment;
     public MusicPlayerFragment mMusicPlayerFragment;
     IntentFilter mIntentFilter;
-    BroadcastReceiver mReceiver;
+    BroadcastReceiver mHeadsetReceiver;
 
 
     @Override
@@ -125,9 +125,9 @@ public class RootBaseActivity extends AppCompatActivity {
         };
 
         mIntentFilter = new IntentFilter();
-        mReceiver = new HeadsetBroadcast();
+        mHeadsetReceiver = new HeadsetBroadcast();
         mIntentFilter.addAction("android.intent.action.HEADSET_PLUG");
-        registerReceiver(mReceiver, mIntentFilter);
+        registerReceiver(mHeadsetReceiver, mIntentFilter);
     }
 
     public void setMusicList(List<MusicBean> mMusicList) {
@@ -169,10 +169,14 @@ public class RootBaseActivity extends AppCompatActivity {
         mBinder.freeCursor(this);
         mBinder.releaseMediaPlayer();
         mMusicPlayerFragment.mHandler.removeCallbacks(mMusicPlayerFragment.mMusicSeekBarRunnable);
-        if (mMusicPlayerFragment.mReceiver != null) {
-            unregisterReceiver(mMusicPlayerFragment.mReceiver);
+        if (mMusicPlayerFragment.mCompleteReceiver != null) {
+            unregisterReceiver(mMusicPlayerFragment.mCompleteReceiver);
         }
-        unregisterReceiver(mReceiver);
+
+        if (mMusicPlayerFragment.mErrorReceiver != null) {
+            unregisterReceiver(mMusicPlayerFragment.mErrorReceiver);
+        }
+        unregisterReceiver(mHeadsetReceiver);
         this.unbindService(mConnection);
         this.stopService(mServiceIntent);
         mLoaderTask = null;
