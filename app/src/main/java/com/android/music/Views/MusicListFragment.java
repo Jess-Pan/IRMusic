@@ -90,7 +90,7 @@ public class MusicListFragment extends Fragment
         this.mManager = new LinearLayoutManager(mActivity);
         this.mAdapter = new IRMusicRecyclerViewAdapter(mActivity);
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
-        mRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent);
+        mRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorWhite);
 
     }
 

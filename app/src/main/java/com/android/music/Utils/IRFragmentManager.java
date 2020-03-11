@@ -38,6 +38,10 @@ public class IRFragmentManager {
      *                 在fragment中请使用(AppCompatActivity)getActivity()作为参数传入
      */
     public static void back(AppCompatActivity activity) {
+        if (getFragmentManager() == null ) {
+            activity.moveTaskToBack(true);
+            return;
+        }
         if (getFragmentManager().getBackStackEntryCount() < 1) {
             activity.moveTaskToBack(true);
         } else {
