@@ -3,17 +3,17 @@
     <item
         android:state_focused="true"
         android:state_pressed="false"
-        android:drawable="@drawable/thumb_normal"/>
+        android:drawable="@drawable/seek_bar_thumb_normal"/>
     <item
         android:state_pressed="true"
         android:state_focused="true"
-        android:drawable="@drawable/thumb_pressed"/>
+        android:drawable="@drawable/seek_bar_thumb_pressed"/>
 
     <item
-        android:drawable="@drawable/thumb_pressed"
+        android:drawable="@drawable/seek_bar_thumb_pressed"
         android:state_pressed="true"
         android:state_focused="false"/>
 
     <item
-        android:drawable="@drawable/thumb_normal"/>
+        android:drawable="@drawable/seek_bar_thumb_normal"/>
 </selector>

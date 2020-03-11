@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.MusicListFragment"
-    android:background="@color/colorMain">
+    android:background="@color/colorGrey">
 
     <com.android.music.Widgets.StatusBarView
         android:id="@+id/statusBar"
