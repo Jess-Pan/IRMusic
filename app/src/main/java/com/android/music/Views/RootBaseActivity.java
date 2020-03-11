@@ -2,8 +2,6 @@ package com.android.music.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -20,10 +18,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.android.music.Models.MusicBean;
 import com.android.music.R;
 import com.android.music.Services.IRService;
+import com.android.music.Utils.IRFragmentManager;
 import com.android.music.Utils.IRUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -95,22 +93,14 @@ public class RootBaseActivity extends AppCompatActivity {
     public void updateFragment(String key) {
         switch (key) {
             case KeyMusicPlayerFragment:
-                    packFragmentManager(mMusicPlayerFragment, TAG_MUSIC_PLAYER_FRAGMENT);
+                    IRFragmentManager.switchFragment(mMusicPlayerFragment, this, TAG_MUSIC_PLAYER_FRAGMENT);
                 break;
             case KeyMusicListFragment:
-                    packFragmentManager(mMusicListFragment, TAG_MUSIC_LIST_FRAGMENT);
+                    IRFragmentManager.switchFragment(mMusicListFragment, this, TAG_MUSIC_LIST_FRAGMENT);
                 break;
             default:
                 break;
         }
-    }
-
-    private void packFragmentManager(Fragment fragment, String tag) {
-        this.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frameLayout, fragment, tag)
-                .addToBackStack(null)
-                .commit();
     }
 
     private void buildService() {
@@ -144,10 +134,6 @@ public class RootBaseActivity extends AppCompatActivity {
         this.mMusicList = mMusicList;
     }
 
-//    public List<MusicBean> getMusicList() {
-//        return mMusicList;
-//    }
-
     protected void goMusicTask() {
         MusicLoaderTask mLoaderTask = new MusicLoaderTask(this);
         mLoaderTask.execute(mBinder);
@@ -169,7 +155,7 @@ public class RootBaseActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK){
-            moveTaskToBack(true);
+            IRFragmentManager.back(this);
             return false;
         }
         return super.onKeyDown(keyCode, event);
