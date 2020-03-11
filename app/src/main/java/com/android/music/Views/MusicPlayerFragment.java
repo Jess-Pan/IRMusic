@@ -182,6 +182,7 @@ public class MusicPlayerFragment extends Fragment implements
         mIntentFilter.addAction("onErrorPlayer");
         mIntentFilter.addAction("OnCompletePlayer");
         mActivity.registerReceiver(mCompleteReceiver, mIntentFilter);
+        mActivity.registerReceiver(mErrorReceiver, mIntentFilter);
     }
 
     private void configHandler() {

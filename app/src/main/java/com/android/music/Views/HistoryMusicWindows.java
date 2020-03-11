@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,17 +45,24 @@ public class HistoryMusicWindows extends PopupWindow {
         mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(displayMetrics.heightPixels * 3 / 4);
-        setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.pop_window_corners));
+        setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.pop_window_corners));
         setFocusable(true);
         mPopListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int height = mPopListView.findViewById(R.id.popMusicHistory).getTop();
                 int y = (int) motionEvent.getY();
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (y < height) {
-                        dismiss();
-                    }
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (y < height) {
+                            dismiss();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        view.performClick();
+                        break;
+                    default:
+                        break;
                 }
                 return true;
             }
