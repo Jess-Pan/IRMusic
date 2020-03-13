@@ -1,10 +1,8 @@
 package com.android.music.Services;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -136,7 +134,7 @@ public class IRService extends Service {
         /**
          * 暂停播放
          */
-        void pauseMusic() {
+        public void pauseMusic() {
 
             mIsPlaying = false;
             mMediaPlayer.pause();
@@ -217,6 +215,9 @@ public class IRService extends Service {
 
         /**
          * 取随机数进行播放
+         * 1. 调用{@link IRUtils#getRandomPosition(List)}获取一个随机数
+         * 2. 调用{@link IRServiceBinder#setNowPlayMusic(MusicBean)} 刷新当前播放音乐
+         * 3. 调用{@link IRServiceBinder#newMusicPlay()} 重新开始播放音乐
          */
         void randomMusicPlay() {
             int seedPosition = IRUtils.getRandomPosition(mMusicList);
@@ -224,6 +225,14 @@ public class IRService extends Service {
             newMusicPlay();
         }
 
+        /**
+         * 播放完成回调
+         * 音乐完成播放后会读取当前的循环状态 {@link IRServiceBinder#arrayType}
+         * 1. 单曲循环会将播放进度清零 并调用{@link IRServiceBinder#continuePlayMusic()}播放音乐
+         * 2. 列表循环会调用 {@link IRServiceBinder#nextMusic()} 并发送完成播放广播通知Fragment更新UI
+         * 3. 随机播放会调用 {@link IRServiceBinder#randomMusicPlay()} 并发送完成播放广播通知Fragment更新UI
+         * @param mediaPlayer
+         */
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             mIntentBroadcast.setAction("OnCompletePlayer");

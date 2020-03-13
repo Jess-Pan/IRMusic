@@ -144,12 +144,12 @@ public class MusicPlayerFragment extends Fragment implements
             mCustomCircleImageView.setImageBitmap(nowBackgroundBitmap);
             if (IRDefault.USE_RenderScript_Blur) {
                 // 推荐
-                mPlayerFragmentLayout.setBackground(new BitmapDrawable(IRUtils.getBlurBitmap(mActivity, IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()))));
+                mPlayerFragmentLayout.setBackground(new BitmapDrawable(mActivity.getResources(), IRUtils.getBlurBitmap(mActivity, IRUtils.getAlbumPicture(mActivity.mBinder.getNowPlayMusic().getData()))));
                 mPlayerFragmentLayout.getBackground().setAlpha(125);
             } else {
-                // todo : 异步获取图片并设置到背景图层
+                // Jni的形式获取高斯模糊,需要使用异步,不推荐
                 Bitmap blurImage = IRUtils.gaussBlurUseGauss(nowBackgroundBitmap, 20);
-                mPlayerFragmentLayout.setBackground(new BitmapDrawable(blurImage));
+                mPlayerFragmentLayout.setBackground(new BitmapDrawable(mActivity.getResources(), blurImage));
             }
 
         } else {

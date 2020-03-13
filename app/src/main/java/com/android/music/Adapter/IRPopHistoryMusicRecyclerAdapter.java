@@ -47,7 +47,6 @@ public class IRPopHistoryMusicRecyclerAdapter extends RecyclerView.Adapter<IRPop
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 MusicBean historyMusic = mHistoryMusicList.get(position);
-                // todo:播放这首歌
                 if (historyMusic != mActivity.mBinder.getNowPlayMusic()) {
                     mActivity.mBinder.setNowPlayMusic(historyMusic);
                     mActivity.mBinder.newMusicPlay();

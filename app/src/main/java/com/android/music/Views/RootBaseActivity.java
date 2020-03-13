@@ -196,6 +196,9 @@ public class RootBaseActivity extends AppCompatActivity {
         IRUtils.eLog("pzh", "onPause");
     }
 
+    /**
+     * 音乐界面加载本地音乐文件的后台异步任务
+     */
     static class MusicLoaderTask extends AsyncTask<IRService.IRServiceBinder, Integer, List<MusicBean>> {
 
         private final WeakReference<RootBaseActivity> mWeakActivity;
@@ -228,6 +231,19 @@ public class RootBaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 耳机拨出、插入状态广播事件处理
+     * 广播Action: android.intent.action.HEADSET_PLUG
+     * 广播Status: 0 --- 拔出, 1 --- 连接
+     * 断开状态:
+     *      1. 判断 Service 有没有绑定, 判断当前有无播放音乐
+     *      2. 调用{@link IRService.IRServiceBinder#pauseMusic()} 暂停播放
+     *      3. 调用{@link MusicPlayerFragment#configMusicPlayButtonImage()} 根据音乐播放状态调整UI
+     * 连接状态:
+     *      1. 判断 Service 有没有绑定, 判断当前有无播放音乐
+     *      2. 调用{@link IRService.IRServiceBinder#continuePlayMusic()} ()} 继续播放
+     *      3. 调用{@link MusicPlayerFragment#configMusicPlayButtonImage()} 根据音乐播放状态调整UI
+     */
     public class HeadsetBroadcast extends BroadcastReceiver {
 
         @Override
@@ -236,16 +252,16 @@ public class RootBaseActivity extends AppCompatActivity {
                 if (intent.getIntExtra("state", 0) == 0) {
                     // 拔出
                     if (mBinder != null && mBinder.getNowPlayMusic() != null) {
-                        mBinder.playMusic();
+                        mBinder.pauseMusic();
                         mMusicPlayerFragment.configMusicPlayButtonImage();
                     }
 
-                    IRUtils.eLog("pzh", "disconn");
+                    IRUtils.eLog("pzh", "disconnect");
                 } else if (intent.getIntExtra("state", 0) == 1) {
                     // 连接
                     if (mBinder != null && mBinder.getNowPlayMusic() != null) {
-                        IRUtils.eLog("pzh", "conn");
-                        mBinder.playMusic();
+                        IRUtils.eLog("pzh", "connect");
+                        mBinder.continuePlayMusic();
                         mMusicPlayerFragment.configMusicPlayButtonImage();
                     }
                 }
