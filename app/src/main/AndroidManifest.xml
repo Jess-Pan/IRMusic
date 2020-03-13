@@ -19,8 +19,8 @@
         <service
             android:name=".Services.IRService"
             android:enabled="true"
-            android:exported="true"
-            tools:ignore="InnerclassSeparator"/>
+            android:exported="false"
+            tools:ignore="InnerclassSeparator" />
 
         <activity android:name=".Views.RootBaseActivity"
             android:launchMode="singleInstance"
