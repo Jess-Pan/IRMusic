@@ -81,5 +81,13 @@ dependencies {
     implementation 'android.arch.persistence.room:testing:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    // --------------------------- LiveData 依赖 --------------------------- //
+    implementation "android.arch.lifecycle:livedata:1.1.1"
+    // --------------------------- ViewModel 依赖 --------------------------- //
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
+    // --------------------------- Lifecycle 依赖 --------------------------- //
+    implementation "android.arch.lifecycle:runtime:1.1.1"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
 }
