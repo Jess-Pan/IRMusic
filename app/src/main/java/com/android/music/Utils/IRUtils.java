@@ -52,7 +52,6 @@ public final class IRUtils {
      */
     private static final String TAG = "IRMusic";
 
-
     /**
      * {@link Log#d(String, String)}
      * @param title
@@ -207,7 +206,5 @@ public final class IRUtils {
 
         valueAnimator.start();
     }
-
-    // Bitmap 暗化处理
 
 }
